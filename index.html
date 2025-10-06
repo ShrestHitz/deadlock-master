@@ -3,220 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deadlock Master - Educational Games</title>
+    <title>Be the Banker - Deadlock Prevention Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Theme Toggle -->
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-        🌙
-    </button>
+    <div id="app">
+        <!-- Start Screen -->
+        <div id="start-screen" class="screen">
+            <div class="start-content">
+                <h1 class="game-title">Be the Banker</h1>
+                <p class="game-subtitle">Master the Banker's Algorithm and prevent deadlocks!</p>
+                
+                <div class="level-selection">
+                    <h3>Choose Difficulty Level</h3>
+                    <div class="level-buttons">
+                        <button class="btn btn--primary level-btn" data-level="1">
+                            <div class="level-info">
+                                <strong>Level 1</strong>
+                                <span>2 Processes • Beginner</span>
+                            </div>
+                        </button>
+                        <button class="btn btn--primary level-btn" data-level="2">
+                            <div class="level-info">
+                                <strong>Level 2</strong>
+                                <span>4 Processes • Intermediate</span>
+                            </div>
+                        </button>
+                        <button class="btn btn--primary level-btn" data-level="3">
+                            <div class="level-info">
+                                <strong>Level 3</strong>
+                                <span>Random • Advanced</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
 
-    <!-- Main Menu Screen -->
-    <div class="screen active" id="mainMenu">
-        <div class="container">
-            <header class="main-header">
-                <h1 class="game-title">Deadlock Master</h1>
-                <p class="game-subtitle">Learn Operating System Concepts Through Interactive Games</p>
-            </header>
-            
-            <div class="menu-options">
-                <div class="game-card" data-game="banker">
-                    <div class="game-card-icon">🏦</div>
-                    <h3>Be the Banker</h3>
-                    <p>Master the Banker's Algorithm by making safe resource allocations</p>
-                    <button class="btn btn--primary">Play Game</button>
-                </div>
-                
-                <div class="game-card" data-game="graph">
-                    <div class="game-card-icon">🕸️</div>
-                    <h3>Graph Playground</h3>
-                    <p>Visualize deadlocks with Resource Allocation Graphs</p>
-                    <button class="btn btn--primary">Play Game</button>
-                </div>
-            </div>
-            
-            <div class="menu-actions">
-                <button class="btn btn--outline" id="tutorialBtn">📚 Tutorial</button>
-                <button class="btn btn--outline" id="scoresBtn">🏆 High Scores</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tutorial Screen -->
-    <div class="screen" id="tutorialScreen">
-        <div class="container">
-            <header class="screen-header">
-                <button class="btn btn--outline back-btn" data-screen="mainMenu">← Back</button>
-                <h2>Tutorial</h2>
-            </header>
-            
-            <div class="tutorial-content">
-                <div class="tutorial-section">
-                    <h3>🏦 Banker's Algorithm</h3>
-                    <p>The Banker's Algorithm prevents deadlock by ensuring the system never enters an unsafe state. A safe state means there exists a sequence of process execution that allows all processes to complete.</p>
-                </div>
-                
-                <div class="tutorial-section">
-                    <h3>🔄 Deadlock Conditions</h3>
-                    <p>Four conditions must be present for deadlock: Mutual Exclusion, Hold and Wait, No Preemption, and Circular Wait.</p>
-                </div>
-                
-                <div class="tutorial-section">
-                    <h3>🕸️ Resource Allocation Graph</h3>
-                    <p>RAG shows the relationship between processes and resources. Cycles in the graph indicate potential deadlock.</p>
+                <div class="tutorial-info">
+                    <h4>How to Play:</h4>
+                    <ul>
+                        <li>Select processes to allocate resources</li>
+                        <li>Ensure system remains in safe state</li>
+                        <li>Complete all processes before time runs out</li>
+                        <li>Earn points for successful executions</li>
+                    </ul>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Scores Screen -->
-    <div class="screen" id="scoresScreen">
-        <div class="container">
-            <header class="screen-header">
-                <button class="btn btn--outline back-btn" data-screen="mainMenu">← Back</button>
-                <h2>High Scores</h2>
-            </header>
-            
-            <div class="scores-content">
-                <div class="scores-section">
-                    <h3>Banker Game</h3>
-                    <div id="bankerScores" class="scores-list">
-                        <p class="no-scores">No scores yet! Play to set your first score.</p>
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen hidden">
+            <div class="game-header">
+                <div class="game-info">
+                    <div class="level-display">Level <span id="current-level">1</span></div>
+                    <div class="score-display">Score: <span id="current-score">0</span></div>
+                    <div id="timer-display" class="timer-display">Time: <span id="timer-value">60</span>s</div>
+                </div>
+                
+                <div class="safety-status">
+                    <div id="safety-badge" class="safety-badge safe">
+                        <span class="safety-icon">✅</span>
+                        <span class="safety-text">System Safe</span>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Banker Game Screen -->
-    <div class="screen" id="bankerGame">
-        <div class="container">
-            <header class="game-header">
-                <button class="btn btn--outline back-btn" data-screen="mainMenu">← Menu</button>
-                <div class="game-stats">
-                    <div class="stat">
-                        <span class="stat-label">Level:</span>
-                        <span class="stat-value" id="currentLevel">1</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">Score:</span>
-                        <span class="stat-value" id="currentScore">0</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">Time:</span>
-                        <span class="stat-value" id="timeRemaining">60</span>
-                    </div>
-                </div>
-            </header>
 
             <div class="game-content">
-                <div class="game-instructions">
-                    <p>Select processes to allocate resources. Keep the system in a safe state!</p>
-                    <div class="safety-indicator">
-                        <span class="safety-status" id="safetyStatus">Safe ✅</span>
-                    </div>
-                </div>
-
-                <div class="matrices-container">
-                    <div class="matrix-section">
-                        <h4>Max Matrix</h4>
-                        <div class="matrix" id="maxMatrix"></div>
+                <div class="matrices-section">
+                    <div class="matrix-container">
+                        <h3>Max Matrix</h3>
+                        <div id="max-matrix" class="matrix"></div>
                     </div>
                     
-                    <div class="matrix-section">
-                        <h4>Allocation Matrix</h4>
-                        <div class="matrix" id="allocationMatrix"></div>
+                    <div class="matrix-container">
+                        <h3>Allocation Matrix</h3>
+                        <div id="allocation-matrix" class="matrix"></div>
                     </div>
                     
-                    <div class="matrix-section">
-                        <h4>Need Matrix</h4>
-                        <div class="matrix" id="needMatrix"></div>
+                    <div class="matrix-container">
+                        <h3>Need Matrix</h3>
+                        <div id="need-matrix" class="matrix"></div>
+                    </div>
+                    
+                    <div class="matrix-container">
+                        <h3>Available Resources</h3>
+                        <div id="available-vector" class="vector"></div>
                     </div>
                 </div>
 
-                <div class="resources-section">
-                    <h4>Available Resources</h4>
-                    <div class="resources-display" id="availableResources"></div>
-                </div>
-
-                <div class="process-controls">
-                    <h4>Select Process to Execute:</h4>
-                    <div class="process-buttons" id="processButtons"></div>
-                </div>
-
-                <div class="game-actions">
-                    <button class="btn btn--primary" id="executeProcess">Execute Selected Process</button>
-                    <button class="btn btn--outline" id="checkSafety">Check Safety</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Graph Playground Screen -->
-    <div class="screen" id="graphPlayground">
-        <div class="container">
-            <header class="game-header">
-                <button class="btn btn--outline back-btn" data-screen="mainMenu">← Menu</button>
-                <div class="graph-controls">
-                    <button class="btn btn--sm" id="addProcess">Add Process</button>
-                    <button class="btn btn--sm" id="addResource">Add Resource</button>
-                    <button class="btn btn--outline btn--sm" id="clearGraph">Clear</button>
-                    <button class="btn btn--primary btn--sm" id="runBanker">Run Banker's</button>
-                </div>
-            </header>
-
-            <div class="graph-content">
-                <div class="graph-instructions">
-                    <p>Drag nodes around and click to connect them. Cycles will be highlighted in red.</p>
-                    <div class="graph-mode">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="graphMode">
-                            <span class="slider"></span>
-                        </label>
-                        <span>Resource Allocation Graph</span>
+                <div class="control-section">
+                    <div class="process-controls">
+                        <h3>Process Selection</h3>
+                        <div id="process-buttons" class="process-buttons"></div>
+                        <button id="execute-btn" class="btn btn--primary btn--lg" disabled>
+                            Execute Selected Process
+                        </button>
                     </div>
-                </div>
 
-                <div class="graph-canvas-container">
-                    <canvas id="graphCanvas" width="800" height="500"></canvas>
-                </div>
-
-                <div class="graph-status">
-                    <div class="cycle-indicator">
-                        <span id="cycleStatus">No cycles detected</span>
+                    <div class="game-status">
+                        <div id="safe-sequence" class="safe-sequence hidden">
+                            <h4>Safe Sequence:</h4>
+                            <div id="sequence-display"></div>
+                        </div>
+                        
+                        <div id="message-display" class="message-display"></div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Game Over Modal -->
-    <div class="modal hidden" id="gameOverModal">
-        <div class="modal-content">
-            <h3>Game Over!</h3>
-            <p id="gameOverMessage"></p>
-            <div class="final-score">
-                <span>Final Score: <strong id="finalScore">0</strong></span>
-            </div>
-            <div class="modal-actions">
-                <button class="btn btn--primary" id="playAgain">Play Again</button>
-                <button class="btn btn--outline" id="backToMenu">Main Menu</button>
+            <button id="pause-btn" class="btn btn--secondary">Pause Game</button>
+        </div>
+
+        <!-- Level Complete Screen -->
+        <div id="level-complete-screen" class="screen hidden">
+            <div class="complete-content">
+                <h2 class="complete-title">Level Complete!</h2>
+                <div class="score-summary">
+                    <div class="score-item">
+                        <span class="score-label">Execution Points:</span>
+                        <span id="execution-points">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">Time Bonus:</span>
+                        <span id="time-bonus">0</span>
+                    </div>
+                    <div class="score-item total">
+                        <span class="score-label">Total Score:</span>
+                        <span id="final-score">0</span>
+                    </div>
+                </div>
+                
+                <div class="complete-actions">
+                    <button id="next-level-btn" class="btn btn--primary btn--lg">Next Level</button>
+                    <button id="restart-btn" class="btn btn--secondary">Play Again</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Level Complete Modal -->
-    <div class="modal hidden" id="levelCompleteModal">
-        <div class="modal-content">
-            <h3>Level Complete! 🎉</h3>
-            <p>Great job! You successfully managed all processes safely.</p>
-            <div class="level-score">
-                <span>Level Score: <strong id="levelScore">0</strong></span>
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" class="screen hidden">
+            <div class="game-over-content">
+                <h2 class="game-over-title">Game Over</h2>
+                <p class="game-over-message">Time ran out or system became unsafe!</p>
+                <div class="final-score-display">
+                    <span>Final Score: <span id="game-over-score">0</span></span>
+                </div>
+                <div class="game-over-actions">
+                    <button id="try-again-btn" class="btn btn--primary btn--lg">Try Again</button>
+                    <button id="main-menu-btn" class="btn btn--secondary">Main Menu</button>
+                </div>
             </div>
-            <div class="modal-actions">
-                <button class="btn btn--primary" id="nextLevel">Next Level</button>
-                <button class="btn btn--outline" id="backToMenuFromLevel">Main Menu</button>
+        </div>
+
+        <!-- Pause Screen -->
+        <div id="pause-screen" class="screen hidden">
+            <div class="pause-content">
+                <h2>Game Paused</h2>
+                <div class="pause-actions">
+                    <button id="resume-btn" class="btn btn--primary btn--lg">Resume Game</button>
+                    <button id="quit-btn" class="btn btn--secondary">Quit to Menu</button>
+                </div>
             </div>
         </div>
     </div>
